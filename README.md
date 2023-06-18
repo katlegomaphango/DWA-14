@@ -1,4 +1,4 @@
-# DWA_14.4 Challenge 1
+# DWA_14.4 Challenge 1: State Machines
 
 ## Description
 
