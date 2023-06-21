@@ -4,6 +4,23 @@ import { LitElement, html } from "../libs/lit-fw.js";
 
 class TallyApp extends LitElement {
 
+    static properties = {
+        value: { type: String }
+    }
+
+    constructor() {
+        super()
+        this.value = 0
+    }
+
+    minusHandler() {
+        this.value--
+    }
+
+    addHandler() {
+        this.value++
+    }
+
     render() {
         return html`
             <section>
@@ -13,11 +30,11 @@ class TallyApp extends LitElement {
 
                 <main class="counter-main">
                     <dialog open class="counter-dialog">Counter has been reset to zero</dialog>
-                    <input class="counter-value" value="0" readonly />
+                    <input class="counter-value" value="${this.value}" readonly />
                     <div class="counter-actions">
                         <div>
-                            <button class="btn btn-minus">-</button>
-                            <button class="btn btn-minus">+</button>
+                            <button class="btn btn-minus" @click=${this.minusHandler}>-</button>
+                            <button class="btn btn-minus" @click=${this.addHandler}>+</button>
                         </div>
                         <button class="btn btn-reset">Reset</button>
                     </div>
