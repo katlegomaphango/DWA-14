@@ -4,19 +4,19 @@ import { LitElement, html, css } from "../libs/lit-fw.js";
 
 /**
  * @typedef {object} State
- * @prop {boolean} Idle
- * @prop {boolean} Max
- * @prop {boolean} Min
+ * @prop {string} Idle
+ * @prop {string} Max
+ * @prop {string} Min
  */
 
 /**
  * @type {State}
  */
-// const STATE = {
-//     Idle: true,
-//     Max: true,
-//     Min: true
-// }
+const STATE = {
+    Idle: 'Idle',
+    Max: 'MAXIMUM',
+    Min: 'MINIMUM'
+}
 
 class TallyApp extends LitElement {
 
@@ -26,27 +26,55 @@ class TallyApp extends LitElement {
         state: {type: String},
         min: {type: String},
         max: {type: String},
+        disabled: {type: Boolean},
+        stateMsg: {type: String},
     }
 
     constructor() {
         super()
         this.value = 0
         this.open = false
-        this.state = 'idle'
+        this.state = STATE.Idle
+        this.disabled = false
+        this.stateMsg = 'Counter has been reset to zero'
     }
 
     minusHandler() {
         this.value--
+        this.handleBoundaries()
     }
 
     addHandler() {
         this.value++
+        this.handleBoundaries()
     }
 
     resetHandler() {
+        if(this.value > -10 && this.value < 10) {
+            this.open = !this.open
+            this.state = STATE.Idle
+            this.stateMsg = 'Counter has been reset to zero'
+            setTimeout(() => this.open = !this.open, 3000)
+        } else {
+            this.open = !this.open
+            this.disabled = false
+        }
         this.value = 0
-        this.open = !this.open
-        setTimeout(() => this.open = !this.open, 3000)
+    }
+
+    handleBoundaries() {
+        if (this.value === 10){
+            this.state = STATE.Max
+            this.disabled = true
+            this.stateMsg = `The ${this.state} has been reached. Please reset...`
+            this.open = !this.open
+        } 
+        if (this.value === -10) {
+            this.state = STATE.Min
+            this.disabled = true
+            this.stateMsg = `The ${this.state} has been reached. Please reset...`
+            this.open = !this.open
+        }
     }
 
     static styles = css`
@@ -63,6 +91,13 @@ class TallyApp extends LitElement {
             font-size: 3rem;
             font-weight: 900;
             color: var(--color-light-gray);
+        }
+
+        dialog {
+            border-color: var(--color-green);
+            background: var(--color-light-gray);
+            color: var(--color-white);
+            font-weight: bold;
         }
 
         /* .counter__value::part(base) */
@@ -82,7 +117,7 @@ class TallyApp extends LitElement {
         /* counter */
         .counter-main {
             background: var(--color-dark-gray);
-            max-width: 50%;
+            max-width: 65%;
             margin: 0 auto;
         }
 
@@ -120,6 +155,32 @@ class TallyApp extends LitElement {
             background: var(--color-medium-gray);
             transform: translateY(-2%);
         }
+
+        .btn-reset {
+            background: var(--color-green);
+            border-width: 0;
+            color: var(--color-white);
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        /* footer */
+        .footer {
+            background: var(--color-dark-gray);
+            color: var(--color-light-gray);
+            align-self: center;
+            padding: 2rem;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 1rem;
+            width: 80%;
+            margin: 0 auto;
+            margin-top: 4rem;
+        }
+
+        .footer-link {
+            color: var(--color-white);
+        }
     `
 
     render() {
@@ -130,12 +191,12 @@ class TallyApp extends LitElement {
                 </header>
 
                 <main class="counter-main">
-                    <dialog .open=${this.open} class="counter-dialog">Counter has been reset to zero</dialog>
-                    <input class="counter-value" value="${this.value}" readonly />
+                    <dialog .open=${this.open} class="counter-dialog">${this.stateMsg}</dialog>
+                    <input class="counter-value" value="${this.value}" disabled />
                     <div class="counter-actions">
                         <div>
-                            <button class="btn btn-minus" @click=${this.minusHandler}>-</button>
-                            <button class="btn btn-add" @click=${this.addHandler}>+</button>
+                            <button class="btn btn-minus" @click=${this.minusHandler} .disabled=${this.disabled}>-</button>
+                            <button type="button" class="btn btn-add" @click=${this.addHandler} .disabled=${this.disabled}>+</button>
                         </div>
                         <button class="btn-reset" @click=${this.resetHandler}>Reset</button>
                     </div>
