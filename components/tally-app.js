@@ -21,6 +21,10 @@ class TallyApp extends LitElement {
         this.value++
     }
 
+    resetHandler() {
+        this.value = 0
+    }
+
     render() {
         return html`
             <section>
@@ -36,7 +40,7 @@ class TallyApp extends LitElement {
                             <button class="btn btn-minus" @click=${this.minusHandler}>-</button>
                             <button class="btn btn-minus" @click=${this.addHandler}>+</button>
                         </div>
-                        <button class="btn btn-reset">Reset</button>
+                        <button class="btn btn-reset" @click=${this.resetHandler}>Reset</button>
                     </div>
                 </main>
                 <footer class="footer">
