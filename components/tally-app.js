@@ -5,12 +5,14 @@ import { LitElement, html } from "../libs/lit-fw.js";
 class TallyApp extends LitElement {
 
     static properties = {
-        value: { type: String }
+        value: { type: String },
+        open: {type: Boolean }
     }
 
     constructor() {
         super()
         this.value = 0
+        this.open = false
     }
 
     minusHandler() {
@@ -23,6 +25,8 @@ class TallyApp extends LitElement {
 
     resetHandler() {
         this.value = 0
+        this.open = !this.open
+        setTimeout(() => this.open = !this.open, 3000)
     }
 
     render() {
@@ -33,7 +37,7 @@ class TallyApp extends LitElement {
                 </header>
 
                 <main class="counter-main">
-                    <dialog open class="counter-dialog">Counter has been reset to zero</dialog>
+                    <dialog .open=${this.open} class="counter-dialog">Counter has been reset to zero</dialog>
                     <input class="counter-value" value="${this.value}" readonly />
                     <div class="counter-actions">
                         <div>
